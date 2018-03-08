@@ -67,8 +67,11 @@ namespace MyEditor
 			AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
 		}
 
-		// 这个目录下的prefab引用的图片不打图集
-		private static void SetNoAtlas(string dir)
+        /// <summary>
+        /// 这个目录下的prefab引用的图片不打图集
+        /// </summary>
+        /// <param name="dir"></param>
+        private static void SetNoAtlas(string dir)
 		{
 			List<string> paths = EditorResHelper.GetPrefabsAndScenes(dir);
 
@@ -109,8 +112,11 @@ namespace MyEditor
 			}
 		}
 
-		// 会将目录下的每个prefab引用的资源强制打成一个包，不分析共享资源
-		private static void SetIndependentBundleAndAtlas(string dir)
+        /// <summary>
+        /// 会将目录下的每个prefab引用的资源强制打成一个包，不分析共享资源
+        /// </summary>
+        /// <param name="dir"></param>
+        private static void SetIndependentBundleAndAtlas(string dir)
 		{
 			List<string> paths = EditorResHelper.GetPrefabsAndScenes(dir);
 			foreach (string path in paths)
@@ -149,6 +155,11 @@ namespace MyEditor
 			}
 		}
 
+        /// <summary>
+        /// 按path得到一个资源的所有依赖
+        /// </summary>
+        /// <param name="o">资源路径</param>
+        /// <returns></returns>
 		private static List<string> CollectDependencies(string o)
 		{
 			string[] paths = AssetDatabase.GetDependencies(o);
@@ -157,8 +168,11 @@ namespace MyEditor
 			return paths.ToList();
 		}
 
-		// 目录下每个prefab打个包，分析共享资源，共享资源打个包
-		private void SetShareBundleAndAtlas(string dir)
+        /// <summary>
+        /// 目录下每个prefab打个包，分析共享资源，共享资源打个包
+        /// </summary>
+        /// <param name="dir"></param>
+        private void SetShareBundleAndAtlas(string dir)
 		{
 			this.dictionary.Clear();
 			List<string> paths = EditorResHelper.GetPrefabsAndScenes(dir);
@@ -218,7 +232,8 @@ namespace MyEditor
 
 		private static void ClearPackingTagAndAssetBundle()
 		{
-			List<string> bundlePaths = EditorResHelper.GetAllResourcePath("Assets/Bundles/", true);
+            //清空根目录Bundles文件夹下的所有资源标记名
+            List<string> bundlePaths = EditorResHelper.GetAllResourcePath("Assets/Bundles/", true);
 			foreach (string bundlePath in bundlePaths)
 			{
 				AssetImporter importer = AssetImporter.GetAtPath(bundlePath);
@@ -230,16 +245,17 @@ namespace MyEditor
 				importer.assetBundleName = "";
 			}
 
-			List<string> paths = EditorResHelper.GetAllResourcePath("Assets/Res", true);
-			foreach (string pt in paths)
-			{
-				string extendName = Path.GetExtension(pt);
-				if (extendName == ".cs")
-				{
-					continue;
-				}
+            //清空根目录Res文件夹下的所有资源标记名
+            List<string> paths = EditorResHelper.GetAllResourcePath("Assets/Res", true);
+            foreach (string pt in paths)
+            {
+                string extendName = Path.GetExtension(pt);
+                if (extendName == ".cs")
+                {
+                    continue;
+                }
 
-				AssetImporter importer = AssetImporter.GetAtPath(pt);
+                AssetImporter importer = AssetImporter.GetAtPath(pt);
 				if (importer == null)
 				{
 					continue;
@@ -251,10 +267,11 @@ namespace MyEditor
 			}
 		}
 
+
 		private static void SetBundle(string path, string name)
 		{
-			AssetImporter importer = AssetImporter.GetAtPath(path);
-			if (importer == null)
+			AssetImporter importer = AssetImporter.GetAtPath(path);//按路径得到importer
+            if (importer == null)
 			{
 				return;
 			}
@@ -273,6 +290,11 @@ namespace MyEditor
 			importer.assetBundleName = bundleName;
 		}
 
+        /// <summary>
+        /// 处理Texture
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
 		private static void SetAtlas(string path, string name)
 		{
 			TextureImporter textureImporter = AssetImporter.GetAtPath(path) as TextureImporter;
@@ -290,9 +312,15 @@ namespace MyEditor
 			AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
 		}
 
+        /// <summary>
+        /// 把没设置名字的资源名设置一个默认的资源名，然后把texture的处理一下
+        /// </summary>
+        /// <param name="path">路径</param>
+        /// <param name="name">资源的对象名</param>
 		private static void SetBundleAndAtlas(string path, string name)
 		{
-			AssetImporter importer = AssetImporter.GetAtPath(path);
+            //这一段和上面的SetBundle()函数内容一样
+            AssetImporter importer = AssetImporter.GetAtPath(path);
 			if (importer == null)
 			{
 				return;

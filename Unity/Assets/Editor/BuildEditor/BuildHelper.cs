@@ -8,12 +8,16 @@ namespace MyEditor
 	{
 		private const string relativeDirPrefix = "../Release";
 
+        /// <summary>
+        /// 最后打的资源包会放到个目录
+        /// </summary>
 		public static string BuildFolder = "../Release/{0}/StreamingAssets/";
 		
 		//[MenuItem("Tools/编译Hotfix")]
 		public static void BuildHotfix()
 		{
-			System.Diagnostics.Process process = new System.Diagnostics.Process();
+            //从unity安装文件夹目录去使用mono编译Unity.Hotfix.csproj
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
 			string unityDir = System.Environment.GetEnvironmentVariable("Unity");
 			if (string.IsNullOrEmpty(unityDir))
 			{
